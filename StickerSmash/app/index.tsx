@@ -9,15 +9,18 @@ const NasaApodImagePicker: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [title, setTitle] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [explanation, setExplanation] = useState(null);
 
   const fetchImage = async () => {
     if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
       Alert.alert('Data inválida', 'Use o formato YYYY-MM-DD');
       return;
     }
+
     setLoading(true);
     setImageUrl(null);
     setTitle(null);
+    setExplanation(null);
 
     try {
       const response = await fetch(
@@ -27,6 +30,7 @@ const NasaApodImagePicker: React.FC = () => {
       if (data.media_type === 'image') {
         setImageUrl(data.url);
         setTitle(data.title);
+        setExplanation(data.explanation);
       } else {
         setImageUrl(null);
         setTitle('Não há imagem para essa data');
@@ -39,6 +43,17 @@ const NasaApodImagePicker: React.FC = () => {
     }
   };
 
+  const aleatoria = async () => {
+    
+    const num1 =  () => { return Math.floor(Math.random() * (2025 - 1995) + 1995)};
+    const num2 =  () => { return Math.floor(Math.random() * (12 - 1) + 1)};
+    const num3 =  () => { return Math.floor(Math.random() * (31 - 1) + 1)};
+    
+    console.log(num1());
+    console.log(num2());
+    console.log(num3());
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>NASA APOD - Escolha uma data</Text>
@@ -49,11 +64,14 @@ const NasaApodImagePicker: React.FC = () => {
         onChangeText={setDate}
       />
       <Button title="Buscar Imagem" onPress={fetchImage} />
+      <Button title="ALEATORIA" onPress={aleatoria}/>
+
       {loading && <ActivityIndicator style={{ marginTop: 20 }} />}
       {imageUrl && (
         <View style={styles.imageContainer}>
           <Text style={styles.title}>{title}</Text>
           <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="contain" />
+          <Text style={styles.explanation}>{explanation}</Text>
         </View>
       )}
       {!imageUrl && title && !loading && <Text style={styles.title}>{title}</Text>}
@@ -68,6 +86,7 @@ const styles = StyleSheet.create({
   imageContainer: { marginTop: 20, alignItems: 'center' },
   image: { width: 300, height: 300, borderRadius: 10, backgroundColor: '#000' },
   title: { color: '#fff', marginVertical: 10, textAlign: 'center' },
+  explanation: {color: 'pink',},
 });
 
 export default NasaApodImagePicker;
