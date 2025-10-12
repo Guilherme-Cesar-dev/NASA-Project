@@ -1,92 +1,69 @@
+import { View, Text, Image, StyleSheet, TextInput, Pressable, } from 'react-native';
 import React, { useState } from 'react';
-import { View, Text, Image, Button, ActivityIndicator, StyleSheet, TextInput, Alert } from 'react-native';
 
-const NASA_API_URL = 'https://api.nasa.gov/planetary/apod';
+const API_URL = 'https://api.nasa.gov/planetary/apod';
 const API_KEY = '6tza6pa8QHVlDvVsAWMSyd3aWDpgPbyXaA205hNC';
 
-const NasaApodImagePicker: React.FC = () => {
-  const [date, setDate] = useState('');
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [title, setTitle] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [explanation, setExplanation] = useState(null);
 
-  const fetchImage = async () => {
-    if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      Alert.alert('Data inválida', 'Use o formato YYYY-MM-DD');
-      return;
-    }
+export default function RootLayout() {
 
-    setLoading(true);
-    setImageUrl(null);
-    setTitle(null);
-    setExplanation(null);
+const [date, setDate] = useState('');
+const [image, setImage] = useState(null);
+const [title, setTitle] = useState();
+const [description, setDescription] = useState(null);
+const [dateE, setDateE] = useState(null);
 
-    try {
-      const response = await fetch(
-        `${NASA_API_URL}?api_key=${API_KEY}&date=${date}`
-      );
-      const data = await response.json();
-      if (data.media_type === 'image') {
-        setImageUrl(data.url);
-        setTitle(data.title);
-        setExplanation(data.explanation);
-      } else {
-        setImageUrl(null);
-        setTitle('Não há imagem para essa data');
-      }
-    } catch (error) {
-      setImageUrl(null);
-      setTitle('Erro ao buscar imagem');
-    } finally {
-      setLoading(false);
-    }
-  };
+const pesquisa = async () => {
 
-  const aleatoria = async () => {
-    
-    const num1 =  () => { return Math.floor(Math.random() * (2025 - 1995) + 1995)};
-    const num2 =  () => { return Math.floor(Math.random() * (12 - 1) + 1)};
-    const num3 =  () => { return Math.floor(Math.random() * (31 - 1) + 1)};
-    
-    console.log(num1());
-    console.log(num2());
-    console.log(num3());
-  };
+    const lolo = await fetch(`${API_URL}?api_key=${API_KEY}&date=${date}`);
+
+    const lol = await lolo.json();
+
+    setImage(lol.url);
+    setTitle(lol.title);
+    setDescription(lol.explanation);
+    setDateE(lol.date);
+
+}
+
+const aleatorio = async () => {
+
+  let num1 =  Math.floor(Math.random() * (2025 - 1995) + 1995);
+  let num2 =  Math.floor(Math.random() * (12 - 1) + 1);
+  let num3 =  Math.floor(Math.random() * (31 - 1) + 1);
+  
+  setDate(num1+'-'+num2+'-'+num3);
+
+  console.log(date)
+}
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>NASA APOD - Escolha uma data</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="YYYY-MM-DD"
-        value={date}
-        onChangeText={setDate}
-      />
-      <Button title="Buscar Imagem" onPress={fetchImage} />
-      <Button title="ALEATORIA" onPress={aleatoria}/>
+      <Text style={styles.title_page}>NASA_APOD</Text>
+      <Text style={styles.subTitle}>API picture of day</Text>
 
-      {loading && <ActivityIndicator style={{ marginTop: 20 }} />}
-      {imageUrl && (
-        <View style={styles.imageContainer}>
-          <Text style={styles.title}>{title}</Text>
-          <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="contain" />
-          <Text style={styles.explanation}>{explanation}</Text>
-        </View>
-      )}
-      {!imageUrl && title && !loading && <Text style={styles.title}>{title}</Text>}
+      {/**Input de data, botao de pesquisa e data aleatoria*/}
+      <TextInput style={styles.input} placeholder='YYYY-MM-DD' value={date} onChangeText={setDate}></TextInput>
+      <Pressable onPress={pesquisa} style={styles.buttonSearch}>SEARCH IMAGE</Pressable>
+      <Pressable onPress={aleatorio} style={styles.buttonSuprise}>ALEATORY DAY</Pressable>
+      
+      {/**Titulo, Imagem e Descrição da data pesquisada*/}
+      <Text style={styles.title}>{title} - {dateE}</Text>
+      <Image source={{uri : image}} style={styles.image}></Image>
+      <Text style={styles.description}>{description}</Text>
+
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20, backgroundColor: '#222' },
-  header: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, color: '#fff' },
-  input: { borderWidth: 1, borderColor: '#555', backgroundColor: '#eee', borderRadius: 8, padding: 10, width: '80%', marginBottom: 10 },
-  imageContainer: { marginTop: 20, alignItems: 'center' },
-  image: { width: 300, height: 300, borderRadius: 10, backgroundColor: '#000' },
-  title: { color: '#fff', marginVertical: 10, textAlign: 'center' },
-  explanation: {color: 'pink',},
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f5f5f5',},
+  title_page: { color: 'black', fontSize: 20,},
+  subTitle: { color: 'black', fontSize: 10,},
+  input: { backgroundColor: 'gray', padding: 3, margin: 4, color: 'white' , borderRadius: 5, borderColor: 'black', borderWidth: 1,},
+  buttonSearch: { backgroundColor: '#008f15ff', color: 'white', margin: 4, padding: 2, borderRadius: 4},
+  buttonSuprise: { backgroundColor: '#006ca6ff', color: 'white', margin: 2, padding: 2, borderRadius: 4},
+  title: { color: 'black', fontSize: 12, fontFamily: 'cursive', padding: 5},
+  image: { width: 300, height: 300, padding: 5}, 
+  description: { color: 'gray', fontSize: 8, width: 700, padding: 4},
 });
-
-export default NasaApodImagePicker;
