@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   move: { fontSize: 14, marginBottom: 2, color: "#00e1ffff" },
   evolutionContainer: { alignItems: "flex-start", marginTop: 20, color: "#fff", backgroundColor: '#00172cff', padding: 12, borderRadius: 10, borderColor: "#005aaeff", borderWidth: 3 },
   evolution: { fontSize: 15, marginBottom: 4, marginLeft: 8, color: "#7f7f7fff"},
-  evoRow: { flexDirection: "row", alignItems: "center", marginBottom: 6, color: "#fff"},
+  evoRow: { flexDirection: "row", alignItems: "center", marginBottom: 6, color: "#ffffffff"},
   evoImage: { width: 40, height: 40, marginRight: 6, borderRadius: 10, backgroundColor: "#eee" },
-  typeContainer: { alignItems: "flex-start", marginTop: 20, marginLeft: 30, backgroundColor: '#fff' },
+  typeContainer: { alignItems: "flex-start", marginTop: 20, marginLeft: 30, backgroundColor: 'rgba(205, 210, 255, 1)', padding: 10, borderRadius: 10, borderColor: "#005aaeff", borderWidth: 3  },
 });
